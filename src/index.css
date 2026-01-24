@@ -11,7 +11,12 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Karla', sans-serif;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Karla', sans-serif;
 }
 
 div#root {
@@ -28,7 +33,7 @@ main {
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -47,6 +52,15 @@ main {
   background-color: white;
   font-size: 1.75rem;
   font-weight: bold;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
+}
+
+.roll-dice {
+  background-color: #5035ff;
+  height: 50px;
+  width: 100px;
+  border-radius: 6px;
+  border: none;
+  color: whitesmoke;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
