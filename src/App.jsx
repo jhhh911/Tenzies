@@ -1,12 +1,22 @@
 import Die from "./Die";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { nanoid } from "nanoid";
-import Confetti from 'react-confetti'
+import Confetti from "react-confetti";
 
 export default function App() {
   const [dice, setDice] = useState(() => generateAllNewDice());
 
-  const gameWon = dice.every(die => die.isHeld && die.value === dice[0].value)
+  const gameWon = dice.every(die => die.isHeld && die.value === dice[0].value);
+
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if(gameWon) {
+      buttonRef.current.focus()
+    }
+  }, [gameWon])
+
+  
 
   function generateAllNewDice() {
     return new Array(10).fill(0).map(() => ({
@@ -14,10 +24,6 @@ export default function App() {
       isHeld: false,
       id: nanoid(),
     }));
-  }
-
-  function newGame() {
-    setDice(generateAllNewDice())
   }
 
   function hold(id) {
@@ -29,11 +35,15 @@ export default function App() {
   }
 
   function rollDice() {
-    setDice(oldDice =>
-      oldDice.map(die =>
-        die.isHeld ? die : { ...die, value: Math.ceil(Math.random() * 6) },
-      ),
-    );
+    if (!gameWon) {
+      setDice(oldDice =>
+        oldDice.map(die =>
+          die.isHeld ? die : { ...die, value: Math.ceil(Math.random() * 6) },
+        ),
+      );
+    } else {
+      setDice(generateAllNewDice());
+    }
   }
 
   const diceElements = dice.map(die => (
@@ -41,7 +51,7 @@ export default function App() {
       key={die.id}
       value={die.value}
       isHeld={die.isHeld}
-      func={hold}
+      hold={() => hold(die.id)}
       id={die.id}
     />
   ));
@@ -49,14 +59,17 @@ export default function App() {
   return (
     <main>
       {gameWon && <Confetti width={1800} />}
+      <div aria-live="polite" className="sr-only">
+        {gameWon && <p>You Won! Press 'New Game' to start again.</p>}
+      </div>
       <h1 className="title">Tenzies</h1>
       <p className="instructions">
         Roll until all dice are the same. Click each die to freeze it at its
         current value between rolls.
       </p>
       <div className="dice-container">{diceElements}</div>
-      <button className="roll-dice" onClick={gameWon ? newGame : rollDice}>
-        {gameWon ? 'New Game' : 'Roll'}
+      <button className="roll-dice" onClick={rollDice} ref={buttonRef}>
+        {gameWon ? "New Game" : "Roll"}
       </button>
     </main>
   );
